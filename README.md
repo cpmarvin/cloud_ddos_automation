@@ -31,8 +31,9 @@ python3 cloud_ddos.py -a 10.200.1.1
 DDoS Attack start , action add for 10.200.1.1/32
 Subnet not found ... starting bgp inject workflow
 found supernet 10.0.0.0/8 ... inject 10.200.1.0/24 subnet with next-hop 10.7.7.7
-Configure routers to allow subnet 10.200.1.0/24 to DDoS Cloud Scrubbing
-Configure routers to deny subnet 10.200.1.0/24 to all external peers
+*** set policy-options policy-statement PXL-DDOS-SCRUB-PERMIT 10.200.1.0/24
+*** set policy-options policy-statement PXL-DDOS-ALL-REJECT 10.200.1.0/24
+
 
 lab@ke-pe3-nbi> show route community 1111:800 table inet.0
 
@@ -52,5 +53,13 @@ inet.0: 20 destinations, 26 routes (20 active, 0 holddown, 0 hidden)
                       AS path: 64512 E, validation-state: unverified
                     > to 10.22.33.22 via ge-0/0/3.0, Push 201007
                       to 10.2.3.2 via ge-0/0/0.0, Push 201007
+                      
+python3 cloud_ddos.py -r 10.200.1.1
+DDoS Attack stop , action remove for 10.200.1.1/32
+found subnet 10.200.1.0/24 ... checking if scrubing community is applied
+found subnet 10.200.1.0/24 ... scrubing community IS applied
+delete subnet 10.200.1.0/24
+*** del policy-options policy-statement PXL-DDOS-SCRUB-PERMIT 10.200.1.0/24
+*** del policy-options policy-statement PXL-DDOS-ALL-REJECT 10.200.1.0/24                   
                       
 ```
