@@ -1,0 +1,14 @@
+rtr3:
+  hostname: 10.3.3.3
+  username: lab
+  password: lab123
+  platform: junos
+  groups:
+    - peering
+rtr5:
+  hostname: 10.5.5.5
+  username: lab
+  password: lab123
+  platform: junos
+  groups:
+    - peering

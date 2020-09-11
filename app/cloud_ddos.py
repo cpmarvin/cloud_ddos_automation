@@ -9,6 +9,7 @@ import gobgp_pb2_grpc
 import attribute_pb2
 from config import CIDR_COMM
 from config import SCRUB_COMM
+from nornir_deploy import _deploy_config
 
 #helpers
 def pb_msg_attrs(m):
@@ -235,9 +236,10 @@ def main():
             else:
                 print('Supernet not found ... exiting')
                 sys.exit()
-        #configure prefix-list regardless if it's a new route or not 
-        print(f'*** set policy-options policy-statement PXL-DDOS-SCRUB-PERMIT {subnet}')
-        print(f'*** set policy-options policy-statement PXL-DDOS-ALL-REJECT {subnet}')
+        #configure prefix-list regardless if it's a new route or not
+        conf_text = f'set policy-options prefix-list PXL-DDOS-SCRUB-PERMIT {subnet}\n'
+        conf_text += f'set policy-options prefix-list PXL-DDOS-ALL-REJECT {subnet}\n'
+        _deploy_config(conf_text)
     elif argopts.todo  =='remove':
         print(f'DDoS Attack stop , action remove for {ip} ')
         if go_bgp_check_subnet(stub,subnet):
@@ -252,8 +254,9 @@ def main():
             print('there is no subnet found ... nothing to do')
             sys.exit()
         #configure prefix-list regardless if it's a new route or not 
-        print(f'*** del policy-options policy-statement PXL-DDOS-SCRUB-PERMIT {subnet}')
-        print(f'*** del policy-options policy-statement PXL-DDOS-ALL-REJECT {subnet}')
+        conf_text = f'delete policy-options prefix-list PXL-DDOS-SCRUB-PERMIT {subnet}\n'
+        conf_text += f'delete policy-options prefix-list PXL-DDOS-ALL-REJECT {subnet}\n'
+        _deploy_config(conf_text)
 
 if __name__ == '__main__':
   main()
